@@ -24,7 +24,8 @@ struct AudiofileDetails: Codable {
     var download, bookmark: String?
     var previews: Previews?
     var images: Images?
-    var numDownloads, avgRating, numRatings: Int?
+    var numDownloads, numRatings: Int?
+    var avgRating: Float?
     var rate, comments: String?
     var numComments: Int?
     var comment, similarSounds: String?

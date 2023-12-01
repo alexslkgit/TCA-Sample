@@ -16,7 +16,7 @@ class ImageLoader: ObservableObject {
     func load(fromURLString urlString: String) {
         
         guard let url = URL(string: urlString) else { return }
-        cancellable?.cancel() // Скасування поточного завантаження
+        cancellable?.cancel()
 
         cancellable = URLSession.shared.dataTaskPublisher(for: url)
             .map { UIImage(data: $0.data) }

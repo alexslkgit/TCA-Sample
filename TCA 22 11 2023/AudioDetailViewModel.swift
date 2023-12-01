@@ -10,11 +10,15 @@ import Combine
 
 class AudioDetailViewModel: ObservableObject {
     
-    @Published var currentAudioId: Int
+    @Published var currentAudioId: Int = 0
     @Published var audioIds: [Int]
     
     private var audioPlayer: AVPlayer?
     private var timeObserver: Any?
+    
+    var hasPreviousTrack: Bool { currentIndex - 1 >= 0 }
+    var hasNextTrack: Bool { currentIndex + 1 < audioIds.count }
+
     
     @Published var currentIndex = 0
     @Published var currentTime: Double = 0
@@ -22,17 +26,32 @@ class AudioDetailViewModel: ObservableObject {
     @Published var playbackRate: Float = 1.0
     @Published var isPlaying = false
     @Published var currentTitle = ""
-    @Published var currentImage: String = ""
+    @Published var posterImagePath: String = ""
     
-    init(currentAudioId: Int, audioIds: [Int]) {
-        self.currentAudioId = currentAudioId
+    private var cancellables = Set<AnyCancellable>()
+    private var playerItemEndObserver: AnyCancellable?
+
+    init(currentIndex: Int, audioIds: [Int]) {
         self.audioIds = audioIds
-        loadAndPlay(audioId: currentAudioId)
+        self.currentIndex = currentIndex
+        self.currentAudioId = audioIds[currentIndex]
     }
     
-    func loadAndPlay(audioId: Int) {
+    func initializeSubscribers() {
+        setupSubscribers()
+    }
+    
+    private func setupSubscribers() {
+        $currentAudioId
+            .sink { [weak self] newAudioId in
+                self?.loadAndPlay(id: newAudioId)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func loadAndPlay(id: Int) {
         
-        APIService().fetchAudioDetails(audioId: audioId) { result in
+        APIService().fetchAudioDetails(audioId: id) { result in
             switch result {
             case .success(let response):
                 if let audioURLString = response.previews?.previewHqMp3,
@@ -43,9 +62,15 @@ class AudioDetailViewModel: ObservableObject {
                     self.audioPlayer?.play()
                     self.setupTimeObserver()
                     self.isPlaying = true
+                    
+                    self.playerItemEndObserver = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+                        .sink { [weak self] _ in
+                            self?.nextTrack()
+                        }
+
                 }
                 if let url = response.images?.spectralBWL {
-                    self.currentImage = url
+                    self.posterImagePath = url
                 }
                 if let currentTitle = response.name {
                     self.currentTitle = currentTitle
@@ -96,16 +121,27 @@ class AudioDetailViewModel: ObservableObject {
     }
     
     func nextTrack() {
-        // Логіка для переключення на наступний трек
+        if hasNextTrack {
+            currentIndex += 1
+            self.currentAudioId = self.audioIds[currentIndex]
+        }
+    }
+
+    func previousTrack() {
+        if hasPreviousTrack {
+            currentIndex -= 1
+            self.currentAudioId = self.audioIds[currentIndex]
+        }
     }
     
-    func previousTrack() {
-        // Логіка для переключення на попередній трек
+    func stop() {
+        self.audioPlayer?.pause()
     }
     
     deinit {
         if let observer = timeObserver {
             audioPlayer?.removeTimeObserver(observer)
         }
+        playerItemEndObserver?.cancel()
     }
 }

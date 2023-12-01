@@ -16,8 +16,10 @@ struct AudioListView: View {
     var body: some View {
         NavigationView {
             List(audioItems) { item in
-                NavigationLink(destination: AudioDetailView(viewModel: AudioDetailViewModel(currentAudioId: item.id,
-                                                                                            audioIds: audioItems.map { $0.id }))) {
+                let idsList = audioItems.map { $0.id }
+                let currentIndex = idsList.firstIndex(of: item.id) ?? 0
+                NavigationLink(destination: AudioDetailView(viewModel: AudioDetailViewModel(currentIndex: currentIndex,
+                                                                                            audioIds: idsList))) {
                     Text(item.name ?? "No name")
                 }
             }
