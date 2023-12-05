@@ -7,51 +7,43 @@
 
 import SwiftUI
 import Alamofire
+import ComposableArchitecture
 
 struct AudioListView: View {
     
-    @State private var audioItems: [AudioResult] = []
+    let store: StoreOf<AudioListFeature>
     @State private var isLoading: Bool = true
     
     var body: some View {
-        NavigationView {
-            List(audioItems) { item in
-                let idsList = audioItems.map { $0.id }
-                let currentIndex = idsList.firstIndex(of: item.id) ?? 0
-                NavigationLink(destination: AudioDetailView(viewModel: AudioDetailViewModel(currentIndex: currentIndex,
-                                                                                            audioIds: idsList))) {
-                    Text(item.name ?? "No name")
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            
+            switch viewStore.state.audioItemsResult {
+            case .success(let audioItems):
+                NavigationView {
+                    List(audioItems) { audioItem in
+                        let idsList = audioItems.map { $0.id }
+                        let currentIndex = idsList.firstIndex(of: audioItem.id) ?? 0
+                        let viewModel = AudioDetailViewModel(currentIndex: currentIndex, audioIds: idsList)
+                        NavigationLink(destination: AudioDetailView(viewModel: viewModel)) {
+                            Text(audioItem.name ?? "No name")
+                        }
+                    }
+                    .navigationTitle("Audiobooks")
+                    .onAppear {
+                        store.send(.onAppear)
+                    }
                 }
+            case .failure(_):
+                Text("ERROR")
             }
-            .navigationTitle("Audiobooks")
-            .onAppear {
-                loadAudioList()
-            }
-        }
-    }
-    
-    private func loadAudioList() {
-        APIService().fetchAudioList { result in
-            switch result {
-            case .success(let response):
-                self.audioItems = response.results ?? []
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-            self.isLoading = false
         }
     }
 }
 
 #Preview {
-    AudioListView()
+    AudioListView(
+        store: Store(initialState: AudioListFeature.State()) {
+            AudioListFeature()
+        }
+    )
 }
-
-// Image
-// Key point label
-// name of chapter
-// start time / slider / end time
-// speed button
-// previous / back 5 sec / pause play / forvard 5 sec / next
-// Image
-

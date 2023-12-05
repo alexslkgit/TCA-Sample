@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		672C2C202B1F5B360042AFAC /* AudioListFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */; };
 		6739EB0D2B1A30AA0092E174 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */; };
 		67A0AF5F2B17A228008DFA40 /* AudiofileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */; };
 		67AC1A7B2B18E83100F7CD73 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AC1A7A2B18E83100F7CD73 /* AsyncImageView.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioListFeature.swift; sourceTree = "<group>"; };
 		6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiofileDetails.swift; sourceTree = "<group>"; };
 		67AC1A7A2B18E83100F7CD73 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 				67AC1A7C2B18F0F700F7CD73 /* Styles */,
 				67AC1A7A2B18E83100F7CD73 /* AsyncImageView.swift */,
 				6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */,
+				672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -227,6 +230,7 @@
 				67F6DAE62B0E7C1900F29E6E /* APIService.swift in Sources */,
 				67AC1A7B2B18E83100F7CD73 /* AsyncImageView.swift in Sources */,
 				67F6DACC2B0E799500F29E6E /* TCA_22_11_2023App.swift in Sources */,
+				672C2C202B1F5B360042AFAC /* AudioListFeature.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct TCA_22_11_2023App: App {
     var body: some Scene {
         WindowGroup {
-            AudioListView()
+            AudioListView(
+                store: Store(initialState: AudioListFeature.State()) {
+                    AudioListFeature()
+                }
+            )
         }
     }
 }
