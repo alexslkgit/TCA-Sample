@@ -44,43 +44,50 @@ class AudioDetailViewModel: ObservableObject {
     private func setupSubscribers() {
         $currentAudioId
             .sink { [weak self] newAudioId in
-                self?.loadAndPlay(id: newAudioId)
+                guard let self = self else { return }
+                Task {
+                    await self.loadAndPlay(id: newAudioId)
+                }
             }
             .store(in: &cancellables)
     }
     
-    func loadAndPlay(id: Int) {
+    func loadAndPlay(id: Int) async {
         
-        APIService().fetchAudioDetails(audioId: id) { result in
-            switch result {
-            case .success(let response):
-                if let audioURLString = response.previews?.previewHqMp3,
-                    let url = URL(string: audioURLString) {
-                    
-                    let playerItem = AVPlayerItem(url: url)
-                    self.audioPlayer = AVPlayer(playerItem: playerItem)
-                    self.audioPlayer?.play()
-                    self.setupTimeObserver()
-                    self.isPlaying = true
-                    
-                    self.playerItemEndObserver = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime, object: playerItem)
-                        .sink { [weak self] _ in
-                            self?.nextTrack()
+        let apiService = APIService()
+        
+        do {
+            let response = try await apiService.fetchAudioDetails(audioId: id)
+            if let audioURLString = response.previews?.previewHqMp3,
+               let url = URL(string: audioURLString) {
+                
+                let playerItem = AVPlayerItem(url: url)
+                self.audioPlayer = AVPlayer(playerItem: playerItem)
+                self.audioPlayer?.play()
+                self.setupTimeObserver()
+                self.isPlaying = true
+                
+                self.playerItemEndObserver = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+                    .sink { [weak self] _ in
+                        guard let self else { return }
+                        Task {
+                            await self.nextTrack()
                         }
+                    }
 
-                }
-                if let url = response.images?.spectralBWL {
-                    self.posterImagePath = url
-                }
-                if let currentTitle = response.name {
-                    self.currentTitle = currentTitle
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
             }
+
+            if let url = response.images?.spectralBWL {
+                self.posterImagePath = url
+            }
+            if let currentTitle = response.name {
+                self.currentTitle = currentTitle
+            }
+        } catch {
+            print(error.localizedDescription)
         }
     }
-    
+
     private func setupTimeObserver() {
         
         timeObserver = audioPlayer?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] time in
@@ -120,13 +127,15 @@ class AudioDetailViewModel: ObservableObject {
         audioPlayer?.seek(to: CMTime(seconds: time, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
     }
     
+    @MainActor
     func nextTrack() {
         if hasNextTrack {
             currentIndex += 1
             self.currentAudioId = self.audioIds[currentIndex]
         }
     }
-
+    
+    @MainActor
     func previousTrack() {
         if hasPreviousTrack {
             currentIndex -= 1
