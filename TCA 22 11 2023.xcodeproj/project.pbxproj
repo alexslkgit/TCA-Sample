@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		670238EB2B21EF6F00FF9C88 /* AudioDetailFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670238EA2B21EF6F00FF9C88 /* AudioDetailFeature.swift */; };
 		672C2C202B1F5B360042AFAC /* AudioListFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */; };
 		6739EB0D2B1A30AA0092E174 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */; };
 		67A0AF5F2B17A228008DFA40 /* AudiofileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		670238EA2B21EF6F00FF9C88 /* AudioDetailFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDetailFeature.swift; sourceTree = "<group>"; };
 		672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioListFeature.swift; sourceTree = "<group>"; };
 		6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiofileDetails.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 				67AC1A7A2B18E83100F7CD73 /* AsyncImageView.swift */,
 				6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */,
 				672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */,
+				670238EA2B21EF6F00FF9C88 /* AudioDetailFeature.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -223,6 +226,7 @@
 				67AC1A7E2B18F10000F7CD73 /* SpeedButtonStyle.swift in Sources */,
 				6739EB0D2B1A30AA0092E174 /* CustomSlider.swift in Sources */,
 				67AC1A802B18F12700F7CD73 /* ImageLoader.swift in Sources */,
+				670238EB2B21EF6F00FF9C88 /* AudioDetailFeature.swift in Sources */,
 				67F6DAE82B0E7DBB00F29E6E /* AudioDetailViewModel.swift in Sources */,
 				67A0AF5F2B17A228008DFA40 /* AudiofileDetails.swift in Sources */,
 				67F6DACE2B0E799500F29E6E /* AudioListView.swift in Sources */,

@@ -47,3 +47,12 @@ struct AudioListView: View {
         }
     )
 }
+
+/*
+NavigationLink(destination: AudioDetailView(
+    store: Store(initialState: AudioListFeature.State()) {
+        AudioDetailFeature()
+    }) {
+    Text(audioItem.name ?? "No name")
+})
+*/
