@@ -12,11 +12,13 @@ import ComposableArchitecture
 struct AudioListFeature {
     
     struct State: Equatable {
-        var audioItemsResult: Result<[AudioResult], Error> = .success([])
+        
+        var audioItemsResult: [AudioResult] = []
         var isLoading = false
         
         static func == (lhs: AudioListFeature.State, rhs: AudioListFeature.State) -> Bool {
-            lhs.isLoading == rhs.isLoading
+            lhs.isLoading == rhs.isLoading &&
+            lhs.audioItemsResult.count == rhs.audioItemsResult.count
         }
     }
     
@@ -44,9 +46,9 @@ struct AudioListFeature {
                 state.isLoading = false
                 switch result {
                 case .success(let audioItems):
-                    state.audioItemsResult = .success(audioItems)
+                    state.audioItemsResult = audioItems
                 case .failure(let error):
-                    state.audioItemsResult = .failure(error)
+                    print(error)
                 }
                 return .none
             }

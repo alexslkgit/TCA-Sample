@@ -18,30 +18,27 @@ struct AudioListView: View {
         
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             
-            switch viewStore.state.audioItemsResult {
-                
-            case .success(let audioItems):
-                
-                NavigationView {
+            let audioItems = viewStore.state.audioItemsResult
+            
+            NavigationView {
+                List(audioItems) { audioItem in
+                    let idsList = audioItems.map { $0.id }
+                    let currentIndex = idsList.firstIndex(of: audioItem.id) ?? 0
+                    let store = Store(
+                        initialState: AudioDetailFeature.State(
+                            audioIds: idsList,
+                            currentIndex: currentIndex
+                        )) {
+                            AudioDetailFeature()
+                        }
                     
-                    List(audioItems) { audioItem in
-                        
-                        let idsList = audioItems.map { $0.id }
-                        let currentIndex = idsList.firstIndex(of: audioItem.id) ?? 0
-                        
-                        NavigationLink(destination: AudioDetailView(
-                            store: Store(
-                                initialState: AudioDetailFeature.State(
-                                    audioIds: idsList,
-                                    currentIndex: currentIndex
-                                ),
-                                reducer: AudioDetailFeature.reducer()))) {
+                    NavigationLink(destination: AudioDetailView(
+                        store: store)) {
                             Text(audioItem.name ?? "No name")
                         }
-                    }
                 }
-            case .failure(_):
-                Text("ERROR")
+            }.onAppear {
+                viewStore.send(.onAppear)
             }
         }
     }
@@ -56,10 +53,10 @@ struct AudioListView: View {
 }
 
 /*
-NavigationLink(destination: AudioDetailView(
-    store: Store(initialState: AudioListFeature.State()) {
-        AudioDetailFeature()
-    }) {
-    Text(audioItem.name ?? "No name")
-})
-*/
+ NavigationLink(destination: AudioDetailView(
+ store: Store(initialState: AudioListFeature.State()) {
+ AudioDetailFeature()
+ }) {
+ Text(audioItem.name ?? "No name")
+ })
+ */

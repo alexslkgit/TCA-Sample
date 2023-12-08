@@ -11,28 +11,27 @@ import AVFoundation
 import Combine
 
 struct AudioDetailView: View {
+    
     let store: StoreOf<AudioDetailFeature>
-    
-    @ObservedObject var viewModel: AudioDetailViewModel
-    
+        
     var body: some View {
+        
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-
             ZStack {
-//                Color(red: 255 / 255.0, green: 248 / 255.0, blue: 243 / 255.0)
-//                    .edgesIgnoringSafeArea(.all)
-//                
-//                VStack {
-//                    AsyncImageView(currentUrlString: viewModel.posterImagePath)
-//                    
-//                    Text("KEY POINT \(viewModel.currentIndex + 1) OF \(viewModel.audioIds.count)")
-//                        .font(.callout)
-//                        .padding(.vertical, 2)
-//                        .foregroundColor(.gray)
-//                    
-//                    Text(viewModel.currentTitle)
-//                        .font(.callout)
-//                        .padding(.vertical, 2)
+                Color(red: 255 / 255.0, green: 248 / 255.0, blue: 243 / 255.0)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    AsyncImageView(currentUrlString: viewStore.posterImagePath)
+                    
+                    Text("KEY POINT \(viewStore.currentIndex + 1) OF \(viewStore.audioIds.count)")
+                        .font(.callout)
+                        .padding(.vertical, 2)
+                        .foregroundColor(.gray)
+                    
+                    Text(viewStore.currentTitle)
+                        .font(.callout)
+                        .padding(.vertical, 2)
 //                    
 //                    HStack {
 //                        Text(formatTime(viewModel.currentTime))
@@ -86,7 +85,7 @@ struct AudioDetailView: View {
 //                }
 //                .onDisappear {
 //                    self.viewModel.stop()
-//                }
+                }
             }
         }
     }
@@ -96,23 +95,23 @@ struct AudioDetailView: View {
     //    self.audioPlayer?.play()
     
     
-    private func sliderEditingChanged(editingStarted: Bool) {
-        if !editingStarted { viewModel.seekTo(viewModel.currentTime) }
-    }
-    
-    private func formatTime(_ seconds: Double) -> String {
-        let time = Int(seconds)
-        let minutes = time / 60 % 60
-        let seconds = time % 60
-        return String(format: "%02i:%02i", minutes, seconds)
-    }
-    
-    private func formatSpeed(_ rate: Float) -> String {
-        if rate.truncatingRemainder(dividingBy: 1) == 0 {
-            return String(format: "%.0f", rate)
-        } else {
-            return String(format: "%.1f", rate)
-        }
-    }
+//    private func sliderEditingChanged(editingStarted: Bool) {
+//        if !editingStarted { viewModel.seekTo(viewModel.currentTime) }
+//    }
+//    
+//    private func formatTime(_ seconds: Double) -> String {
+//        let time = Int(seconds)
+//        let minutes = time / 60 % 60
+//        let seconds = time % 60
+//        return String(format: "%02i:%02i", minutes, seconds)
+//    }
+//    
+//    private func formatSpeed(_ rate: Float) -> String {
+//        if rate.truncatingRemainder(dividingBy: 1) == 0 {
+//            return String(format: "%.0f", rate)
+//        } else {
+//            return String(format: "%.1f", rate)
+//        }
+//    }
     
 }
