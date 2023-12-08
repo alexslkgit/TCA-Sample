@@ -12,9 +12,9 @@ import ComposableArchitecture
 struct AudioListView: View {
     
     let store: StoreOf<AudioListFeature>
-    @State private var isLoading: Bool = true
     
     var body: some View {
+        
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             
             switch viewStore.state.audioItemsResult {
