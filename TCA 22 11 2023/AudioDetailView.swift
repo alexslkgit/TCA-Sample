@@ -51,6 +51,7 @@ struct AudioDetailView: View {
                     .padding(.bottom, 20)
                     
                     HStack(spacing: 20) {
+                        
                         Button(action: {
                             viewStore.send(.previousTrack)
                         }) {
@@ -89,6 +90,8 @@ struct AudioDetailView: View {
                         .disabled(!viewStore.state.hasNextTrack)
                     }.onAppear {
                         viewStore.send(.onAppear)
+                    }.onDisappear {
+                        viewStore.send(.onDisappear)
                     }
                     .font(.title)
                     .padding(.bottom, 20)
@@ -99,18 +102,7 @@ struct AudioDetailView: View {
             }
         }
     }
-    
-    
-    //    self.audioPlayer = AVPlayer(url: url)
-    //    self.audioPlayer?.play()
-    
-    //    .onAppear {
-    //        self.viewStore.initializeSubscribers()
-    //    }
-    //    .onDisappear {
-    //        self.viewStore.stop()
-    //    }
-    
+
     private func sliderEditingChanged(editingStarted: Bool) {
         
     }

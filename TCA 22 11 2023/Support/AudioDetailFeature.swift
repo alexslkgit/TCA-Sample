@@ -31,7 +31,6 @@ struct AudioDetailFeature {
         var currentAudioId: Int = 0
         
         static func == (lhs: AudioDetailFeature.State, rhs: AudioDetailFeature.State) -> Bool {
-            
             lhs.audioIds == rhs.audioIds &&
             lhs.currentIndex == rhs.currentIndex &&
             lhs.currentTime == rhs.currentTime &&
@@ -115,11 +114,23 @@ struct AudioDetailFeature {
                 return .none
                 
             case .nextTrack:
-                
-                return .none
+                if state.hasNextTrack {
+                    state.currentIndex += 1
+                    state.currentAudioId = state.audioIds[state.currentIndex]
+                }
+                return .run(operation: { send in
+                    await send(.onAppear)
+                })
                 
             case .previousTrack:
-                return .none
+                if state.hasPreviousTrack {
+                    state.currentIndex -= 1
+                    state.currentAudioId = state.audioIds[state.currentIndex]
+                    let audioId = state.currentAudioId
+                }
+                return .run(operation: { send in
+                    await send(.onAppear)
+                })
                 
             case .audioLoaded(let result):
                 
@@ -128,7 +139,10 @@ struct AudioDetailFeature {
                     state.currentTitle = audioDetails.name ?? ""
                     state.posterImagePath = audioDetails.images?.spectralBWL ?? ""
                     if let url = URL(string: audioDetails.previews?.previewHqMp3 ?? "") {
-                        state.audioURL = url
+                        let playerItem = AVPlayerItem(url: url)
+                        self.audioPlayer.replaceCurrentItem(with: playerItem)
+                        self.audioPlayer.play()
+                        state.isPlaying = true
                     }
                 case .failure(let error):
                     print(error.localizedDescription)
@@ -138,104 +152,4 @@ struct AudioDetailFeature {
             
         }
     }
-    
 }
-
-/*
- 
- Reduce { state, action in
- 
- switch action {
- case .onAppear:
- let currentAudioId = state.audioIds[state.currentIndex]
- state.currentAudioId = currentAudioId
- return .run { send in
- 
- guard let url = URL(string: "https://freesound.org/apiv2/sounds/\(currentAudioId)/?token=yocIk0HQ0y5szj8UhGrCvwhLI2C7VAIL0GyFIXyI") else {
- throw URLError(.badURL)
- }
- 
- let (data, response) = try await URLSession.shared.data(from: url)
- guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
- throw URLError(.badServerResponse)
- }
- 
- let decoder = JSONDecoder()
- let dataR = try decoder.decode(AudiofileDetails.self, from: data)
- await send(.audioLoaded(.success(dataR)))
- }
- case .onDisappear:
- self.audioPlayer.pause()
- case .sliderChanged(let newTime):
- self.audioPlayer.seek(to: CMTime(seconds: newTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
- case .playPause:
- if self.audioPlayer.timeControlStatus == .playing {
- self.audioPlayer.pause()
- state.isPlaying = false
- } else {
- self.audioPlayer.play()
- state.isPlaying = true
- }
- return .none
- case .rewind(let seconds):
- guard let duration = self.audioPlayer.currentItem?.duration.seconds,
- !duration.isNaN else { return .none }
- 
- let newTime = CMTimeGetSeconds(self.audioPlayer.currentTime()) + seconds
- if newTime >= 0 && newTime <= duration {
- self.audioPlayer.seek(to: CMTime(seconds: newTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
- }
- return .none
- case .changePlaybackRate:
- state.playbackRate = (state.playbackRate == 1.0) ? 1.5 : 1.0
- self.audioPlayer.rate = state.playbackRate
- return .none
- case .nextTrack:
- if state.hasNextTrack {
- state.currentIndex += 1
- state.currentAudioId = state.audioIds[state.currentIndex]
- if let audioId = state.currentAudioId {
- let response = try await APIService().fetchAudioDetails(audioId: audioId)
- state.currentTitle = response.name ?? ""
- state.posterImagePath = response.images?.spectralBWL ?? ""
- if let url = URL(string: response.previews?.previewHqMp3 ?? "") {
- state.audioPlayer = AVPlayer(url: url)
- state.audioPlayer?.play()
- }
- }
- }
- return .none
- case .previousTrack:
- if state.hasPreviousTrack {
- state.currentIndex -= 1
- state.currentAudioId = state.audioIds[state.currentIndex]
- if let audioId = state.currentAudioId {
- let response = try await APIService().fetchAudioDetails(audioId: audioId)
- state.currentTitle = response.name ?? ""
- state.posterImagePath = response.images?.spectralBWL ?? ""
- if let url = URL(string: response.previews?.previewHqMp3 ?? "") {
- state.audioPlayer = AVPlayer(url: url)
- state.audioPlayer?.play()
- }
- }
- }
- return .none
- case .audioLoaded(let result):
- switch result {
- case .success(let audioDetails):
- state.currentTitle = audioDetails.name ?? ""
- state.posterImagePath = audioDetails.images?.spectralBWL ?? ""
- if let url = URL(string: audioDetails.previews?.previewHqMp3 ?? "") {
- state.audioPlayer = AVPlayer(url: url)
- state.audioPlayer?.play()
- }
- case .failure(let error):
- // Обробка помилки
- print(error.localizedDescription)
- }
- return .none
- }
- }
- }
- 
- */
