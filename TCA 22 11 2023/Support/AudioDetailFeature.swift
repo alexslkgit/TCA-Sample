@@ -15,6 +15,7 @@ struct AudioDetailFeature {
     var audioPlayer = AVPlayer()
     
     struct State: Equatable {
+        
         var audioIds: [Int]
         var currentIndex: Int
         var currentTime: Double = 0
@@ -28,7 +29,23 @@ struct AudioDetailFeature {
         var audioURL = URL(string: "")
         
         var currentAudioId: Int = 0
+        
+        static func == (lhs: AudioDetailFeature.State, rhs: AudioDetailFeature.State) -> Bool {
+            
+            lhs.audioIds == rhs.audioIds &&
+            lhs.currentIndex == rhs.currentIndex &&
+            lhs.currentTime == rhs.currentTime &&
+            lhs.duration == rhs.duration &&
+            lhs.playbackRate == rhs.playbackRate &&
+            lhs.isPlaying == rhs.isPlaying &&
+            lhs.currentTitle == rhs.currentTitle &&
+            lhs.posterImagePath == rhs.posterImagePath &&
+            lhs.hasPreviousTrack == rhs.hasPreviousTrack &&
+            lhs.audioURL == rhs.audioURL &&
+            lhs.currentAudioId == rhs.currentAudioId
+        }        
     }
+    
     enum Action {
         case onAppear
         case onDisappear
@@ -39,11 +56,6 @@ struct AudioDetailFeature {
         case nextTrack
         case previousTrack
         case audioLoaded(Result<AudiofileDetails, Error>)
-    }
-    
-    struct Environment {
-        var audioPlayer: AVPlayer?
-        var apiService: APIService
     }
     
     var body: some ReducerOf<Self> {

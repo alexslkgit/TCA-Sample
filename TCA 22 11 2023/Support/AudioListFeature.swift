@@ -12,12 +12,12 @@ import ComposableArchitecture
 struct AudioListFeature {
     
     struct State: Equatable {
+        var audioItemsResult: Result<[AudioResult], Error> = .success([])
+        var isLoading = false
+        
         static func == (lhs: AudioListFeature.State, rhs: AudioListFeature.State) -> Bool {
             lhs.isLoading == rhs.isLoading
         }
-        
-        var audioItemsResult: Result<[AudioResult], Error> = .success([])
-        var isLoading = false
     }
     
     enum Action {

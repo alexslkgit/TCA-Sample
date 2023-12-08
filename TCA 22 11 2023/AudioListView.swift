@@ -15,22 +15,29 @@ struct AudioListView: View {
     @State private var isLoading: Bool = true
     
     var body: some View {
+        
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             
             switch viewStore.state.audioItemsResult {
+                
             case .success(let audioItems):
+                
                 NavigationView {
+                    
                     List(audioItems) { audioItem in
+                        
                         let idsList = audioItems.map { $0.id }
                         let currentIndex = idsList.firstIndex(of: audioItem.id) ?? 0
-                        let viewModel = AudioDetailViewModel(currentIndex: currentIndex, audioIds: idsList)
-                        NavigationLink(destination: AudioDetailView(viewModel: viewModel)) {
+                        
+                        NavigationLink(destination: AudioDetailView(
+                            store: Store(
+                                initialState: AudioDetailFeature.State(
+                                    audioIds: idsList,
+                                    currentIndex: currentIndex
+                                ),
+                                reducer: AudioDetailFeature.reducer()))) {
                             Text(audioItem.name ?? "No name")
                         }
-                    }
-                    .navigationTitle("Audiobooks")
-                    .onAppear {
-                        store.send(.onAppear)
                     }
                 }
             case .failure(_):
