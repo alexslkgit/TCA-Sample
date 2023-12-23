@@ -34,15 +34,18 @@ struct AudioDetailView: View {
                         .font(.callout)
                         .padding(.vertical, 2)
                     
-                    //                    HStack {
-                    //                        Text(formatTime(viewStore.currentTime))
-                    //                        CustomSlider(value: viewStore.state.currentTime, range: 0...viewStore.state.duration, onEditingChanged: {
-                    //                            if !sliderEditingChanged { viewStore.seekTo(viewStore.currentTime) }
-                    //                        })
-                    //
-                    //                        Text(formatTime(viewStore.duration))
-                    //                    }
-                    //                    .padding(.vertical, 10)
+                    HStack {
+                        Text(formatTime(viewStore.currentTime))
+                        
+                        Slider(value: Binding(get: { viewStore.currentTime },
+                                              set: { value in
+                            print("Sheeeet")
+                            viewStore.send(.sliderChanged(value))
+                        }), in: 0...viewStore.duration)
+                        
+                        Text(formatTime(viewStore.duration))
+                    }
+                    .padding(.vertical, 10)
                     
                     Button("Speed \(formatSpeed(viewStore.playbackRate))") {
                         viewStore.send(.changePlaybackRate)
@@ -98,13 +101,8 @@ struct AudioDetailView: View {
                     Spacer(minLength: UIScreen.main.bounds.height * 0.1)
                 }
                 .padding()
-                
             }
         }
-    }
-
-    private func sliderEditingChanged(editingStarted: Bool) {
-        
     }
     
     private func formatTime(_ seconds: Double) -> String {

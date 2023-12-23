@@ -7,12 +7,11 @@
 
 import Foundation
 import ComposableArchitecture
-import AVFoundation
 
 @Reducer
 struct AudioDetailFeature {
     
-    var audioPlayer = AVPlayer()
+    @Dependency(\.mediaPlayer) var mediaPlayer
     
     struct State: Equatable {
         
@@ -42,19 +41,21 @@ struct AudioDetailFeature {
             lhs.hasPreviousTrack == rhs.hasPreviousTrack &&
             lhs.audioURL == rhs.audioURL &&
             lhs.currentAudioId == rhs.currentAudioId
-        }        
+        }
     }
     
     enum Action {
         case onAppear
         case onDisappear
         case sliderChanged(Double)
+        case updateCurrentTime(Double)
         case playPause
         case rewind(Double)
         case changePlaybackRate
         case nextTrack
         case previousTrack
         case audioLoaded(Result<AudiofileDetails, Error>)
+        case audioIsreadyToPlay
     }
     
     var body: some ReducerOf<Self> {
@@ -81,36 +82,23 @@ struct AudioDetailFeature {
                     await send(.audioLoaded(.success(dataR)))
                 }
             case .onDisappear:
-                self.audioPlayer.pause()
+                self.mediaPlayer.stop()
                 return .none
                 
             case .sliderChanged(let newTime):
-                self.audioPlayer.seek(to: CMTime(seconds: newTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+                self.mediaPlayer.seek(to: newTime)
                 return .none
                 
             case .playPause:
-                if self.audioPlayer.timeControlStatus == .playing {
-                    self.audioPlayer.pause()
-                    state.isPlaying = false
-                } else {
-                    self.audioPlayer.play()
-                    state.isPlaying = true
-                }
+                mediaPlayer.playPause(state: &state)
                 return .none
                 
             case .rewind(let seconds):
-                guard let duration = self.audioPlayer.currentItem?.duration.seconds,
-                      !duration.isNaN else { return .none }
-                
-                let newTime = CMTimeGetSeconds(self.audioPlayer.currentTime()) + seconds
-                if newTime >= 0 && newTime <= duration {
-                    self.audioPlayer.seek(to: CMTime(seconds: newTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
-                }
+                mediaPlayer.rewind(by: seconds, state: &state)
                 return .none
                 
             case .changePlaybackRate:
-                state.playbackRate = (state.playbackRate == 1.0) ? 1.5 : 1.0
-                self.audioPlayer.rate = state.playbackRate
+                self.mediaPlayer.changePlaybackRate(state: &state)
                 return .none
                 
             case .nextTrack:
@@ -126,7 +114,6 @@ struct AudioDetailFeature {
                 if state.hasPreviousTrack {
                     state.currentIndex -= 1
                     state.currentAudioId = state.audioIds[state.currentIndex]
-                    let audioId = state.currentAudioId
                 }
                 return .run(operation: { send in
                     await send(.onAppear)
@@ -138,18 +125,23 @@ struct AudioDetailFeature {
                 case .success(let audioDetails):
                     state.currentTitle = audioDetails.name ?? ""
                     state.posterImagePath = audioDetails.images?.spectralBWL ?? ""
-                    if let url = URL(string: audioDetails.previews?.previewHqMp3 ?? "") {
-                        let playerItem = AVPlayerItem(url: url)
-                        self.audioPlayer.replaceCurrentItem(with: playerItem)
-                        self.audioPlayer.play()
-                        state.isPlaying = true
-                    }
+                    guard let url = URL(string: audioDetails.previews?.previewHqMp3 ?? "") else { return .none }
+                    
+                    self.mediaPlayer.loadItem(url: url, state: &state)
+                    return .run(operation: { send in
+                        await send(.audioIsreadyToPlay)
+                    })
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
                 return .none
+            case .updateCurrentTime(let newTime):
+                state.currentTime = newTime
+                return .none
+            case .audioIsreadyToPlay:
+                self.mediaPlayer.updateDuration(state: &state)
+                return .none
             }
-            
         }
     }
 }

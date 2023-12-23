@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		670238EB2B21EF6F00FF9C88 /* AudioDetailFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670238EA2B21EF6F00FF9C88 /* AudioDetailFeature.swift */; };
+		670E40562B3709250095A70A /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 670E40552B3709250095A70A /* Dependencies */; };
+		670E40582B3709250095A70A /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 670E40572B3709250095A70A /* DependenciesMacros */; };
+		670E405A2B3723380095A70A /* MdeiaPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670E40592B3723380095A70A /* MdeiaPlayerService.swift */; };
 		672C2C202B1F5B360042AFAC /* AudioListFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */; };
 		6739EB0D2B1A30AA0092E174 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */; };
 		67A0AF5F2B17A228008DFA40 /* AudiofileDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */; };
@@ -28,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		670238EA2B21EF6F00FF9C88 /* AudioDetailFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDetailFeature.swift; sourceTree = "<group>"; };
+		670E40592B3723380095A70A /* MdeiaPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MdeiaPlayerService.swift; sourceTree = "<group>"; };
 		672C2C1F2B1F5B360042AFAC /* AudioListFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioListFeature.swift; sourceTree = "<group>"; };
 		6739EB0C2B1A30AA0092E174 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		67A0AF5E2B17A228008DFA40 /* AudiofileDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiofileDetails.swift; sourceTree = "<group>"; };
@@ -50,7 +54,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				670E40562B3709250095A70A /* Dependencies in Frameworks */,
 				67DB5B942B14DE0300D8FA30 /* ComposableArchitecture in Frameworks */,
+				670E40582B3709250095A70A /* DependenciesMacros in Frameworks */,
 				67F6DADE2B0E7A6C00F29E6E /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +146,7 @@
 			children = (
 				67F6DAE52B0E7C1900F29E6E /* APIService.swift */,
 				67AC1A7F2B18F12700F7CD73 /* ImageLoader.swift */,
+				670E40592B3723380095A70A /* MdeiaPlayerService.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -163,6 +170,8 @@
 			packageProductDependencies = (
 				67F6DADD2B0E7A6C00F29E6E /* Alamofire */,
 				67DB5B932B14DE0300D8FA30 /* ComposableArchitecture */,
+				670E40552B3709250095A70A /* Dependencies */,
+				670E40572B3709250095A70A /* DependenciesMacros */,
 			);
 			productName = "TCA 22 11 2023";
 			productReference = 67F6DAC82B0E799500F29E6E /* TCA 22 11 2023.app */;
@@ -195,6 +204,7 @@
 			packageReferences = (
 				67F6DADC2B0E7A6C00F29E6E /* XCRemoteSwiftPackageReference "Alamofire" */,
 				67DB5B922B14DE0300D8FA30 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				670E40542B3709250095A70A /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			productRefGroup = 67F6DAC92B0E799500F29E6E /* Products */;
 			projectDirPath = "";
@@ -233,6 +243,7 @@
 				67F6DADB2B0E7A2400F29E6E /* AudioList.swift in Sources */,
 				67F6DAE62B0E7C1900F29E6E /* APIService.swift in Sources */,
 				67AC1A7B2B18E83100F7CD73 /* AsyncImageView.swift in Sources */,
+				670E405A2B3723380095A70A /* MdeiaPlayerService.swift in Sources */,
 				67F6DACC2B0E799500F29E6E /* TCA_22_11_2023App.swift in Sources */,
 				672C2C202B1F5B360042AFAC /* AudioListFeature.swift in Sources */,
 			);
@@ -442,6 +453,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		670E40542B3709250095A70A /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.5;
+			};
+		};
 		67DB5B922B14DE0300D8FA30 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
@@ -461,6 +480,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		670E40552B3709250095A70A /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 670E40542B3709250095A70A /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		670E40572B3709250095A70A /* DependenciesMacros */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 670E40542B3709250095A70A /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesMacros;
+		};
 		67DB5B932B14DE0300D8FA30 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67DB5B922B14DE0300D8FA30 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
